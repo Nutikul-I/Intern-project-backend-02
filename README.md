@@ -1,3 +1,3 @@
-# internal-api-service
+# Template-Golang
 
-Internal API Service Golang
+Template API Golang
