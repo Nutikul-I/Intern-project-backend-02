@@ -17,12 +17,6 @@ func main() {
 		AllowOrigins: "*",
 	}))
 
-	app.Use(cors.New())
-
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-	}))
-
 	log.Info("==-- Start Internal Service --==")
 	router.SetupRoutes(app)
 

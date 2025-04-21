@@ -2,17 +2,12 @@ module payso-internal-api
 
 go 1.21.0
 
-require google.golang.org/appengine v1.6.7
-
 require (
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
 	github.com/jonboulle/clockwork v0.4.0 // indirect
 	github.com/lestrrat/go-envload v0.0.0-20180220120943-6ed08b54a570 // indirect
 	github.com/tebeka/strftime v0.1.5 // indirect
-	golang.org/x/net v0.19.0 // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
 )
 
 require (
@@ -43,7 +38,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.4
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
-	github.com/google/uuid v1.6.0
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/joho/godotenv v1.5.1
 	github.com/klauspost/compress v1.17.0 // indirect
