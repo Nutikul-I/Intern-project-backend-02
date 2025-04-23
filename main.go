@@ -7,10 +7,10 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 func main() {
+	port := "8080"
 	app := fiber.New()
 	app.Use(cors.New())
 	app.Use(cors.New(cors.Config{
@@ -20,6 +20,6 @@ func main() {
 	log.Info("==-- Start Internal Service --==")
 	router.SetupRoutes(app)
 
-	app.Listen(":" + viper.GetString("SERVER_PORT"))
+	app.Listen(":" + port)
 
 }

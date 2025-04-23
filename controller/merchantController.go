@@ -43,7 +43,7 @@ func (ctl *merchantController) GetMerchant(c *fiber.Ctx) error {
 
 	res, err := ctl.merchantService.GetMerchantService(RequestMID, Page, Row)
 	if err != nil {
-		log.Error("GetMerchant Error from service GetMerchant: %v", err)
+		log.Errorf("GetMerchant Error from service GetMerchant: %v", err)
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
 			"message": "API Failed.",
@@ -83,7 +83,7 @@ func (ctl *merchantController) CreateMerchant(c *fiber.Ctx) error {
 
 	res, err := ctl.merchantService.CreateMerchantService(payload, c.IP())
 	if err != nil {
-		log.Error("CreateMerchant Error from service CreateMerchant: %v", err)
+		log.Errorf("CreateMerchant Error from service CreateMerchant: %v", err)
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
 			"message": "API Failed.",
@@ -114,7 +114,7 @@ func (ctl *merchantController) DeleteMerchant(c *fiber.Ctx) error {
 
 	res, err := ctl.merchantService.DeleteMerchantService(ReqMasterMerchantID, ReqMerchantID)
 	if err != nil {
-		log.Error("DeleteMerchant Error from service DeleteMerchant: %v", err)
+		log.Errorf("DeleteMerchant Error from service DeleteMerchant: %v", err)
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
 			"message": "API Failed.",

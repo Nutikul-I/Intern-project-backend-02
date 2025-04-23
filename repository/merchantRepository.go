@@ -10,6 +10,7 @@ import (
 )
 
 func GetMerchantRepository(mid string, page int, row int) ([]model.MerchantPlayload, error) {
+	// Connect to the database
 	conn := ConnectDB()
 	ctx := context.Background()
 
@@ -24,7 +25,7 @@ func GetMerchantRepository(mid string, page int, row int) ([]model.MerchantPlayl
 	if page > 0 {
 		Offset = (page - 1) * row
 	}
-
+	// get merchant
 	tsql := model.SQL_GET_MERCHANT
 	if mid == "0" {
 		tsql += " WHERE CountChild > 0 ORDER BY MerchantID DESC OFFSET @Offset ROWS FETCH NEXT @Row ROWS ONLY "
@@ -37,6 +38,7 @@ func GetMerchantRepository(mid string, page int, row int) ([]model.MerchantPlayl
 		log.Errorf("Error executing query: %v", err)
 		return nil, err
 	}
+	// Defer closing the rows for later
 	defer rows.Close()
 
 	var MerchantData []model.MerchantPlayload
