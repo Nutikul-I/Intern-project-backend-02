@@ -14,6 +14,7 @@ func SetupRoutes(app *fiber.App) {
 
 	merchantController := controller.NewMerchantController(service.NewMerchantService(handler.NewMerchantHandler()))
 	customerController := controller.NewCustomerController(service.NewcustomerService(handler.NewCustomerHandler()))
+	employeesController := controller.NewEmployeesController(service.NewEmployeesService(handler.NewEmployeesHandler()))
 
 	api := app.Group("/", func(c *fiber.Ctx) error {
 		if !strings.Contains(c.Request().URI().String(), "/ping") {
@@ -31,4 +32,9 @@ func SetupRoutes(app *fiber.App) {
 	customer.Get("/customer", customerController.GetCustomer)
 	// customer.Post("/create-customer", customerController.CreateCustomer)
 	// customer.Delete("/delete-customer", customerController.DeleteCustomer)
+
+	employees := api.Group("/api/employees")
+	employees.Get("/employees", employeesController.GetEmployees)
+	// employees.Post("/create-employees", employeesController.CreateEmployees)
+	// employees.Delete("/delete-employees", employeesController.DeleteEmployees)
 }

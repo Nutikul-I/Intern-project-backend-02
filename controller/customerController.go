@@ -64,8 +64,8 @@ func (ctl *customerController) GetCustomer(c *fiber.Ctx) error {
 	})
 }
 
-func (cc *customerController) UpdateCustomer(c *fiber.Ctx) error {
-	log.Info("UpdateCustomer called")
-	// Implement logic for updating a customer
-	return c.SendString("UpdateCustomer")
-}
+// func (cc *customerController) UpdateCustomer(c *fiber.Ctx) error {
+// 	log.Info("UpdateCustomer called")
+// 	// Implement logic for updating a customer
+// 	return c.SendString("UpdateCustomer")
+// }
