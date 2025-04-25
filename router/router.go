@@ -13,7 +13,7 @@ import (
 func SetupRoutes(app *fiber.App) {
 
 	merchantController := controller.NewMerchantController(service.NewMerchantService(handler.NewMerchantHandler()))
-	customerController := controller.NewCustomerController(service.NewcustomerService(handler.NewCustomerHandler()))
+	customerController := controller.NewCustomerController(service.NewCustomerService(handler.NewCustomerHandler()))
 	employeesController := controller.NewEmployeesController(service.NewEmployeesService(handler.NewEmployeesHandler()))
 
 	api := app.Group("/", func(c *fiber.Ctx) error {
@@ -30,7 +30,7 @@ func SetupRoutes(app *fiber.App) {
 
 	customer := api.Group("/api/customer")
 	customer.Get("/customer", customerController.GetCustomer)
-	// customer.Post("/create-customer", customerController.CreateCustomer)
+	customer.Post("/create-customer", customerController.CreateCustomer)
 	// customer.Delete("/delete-customer", customerController.DeleteCustomer)
 
 	employees := api.Group("/api/employees")

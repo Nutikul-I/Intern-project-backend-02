@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"payso-internal-api/model"
 	"payso-internal-api/service"
 	"strconv"
 
@@ -10,6 +11,7 @@ import (
 
 type CustomerController interface {
 	GetCustomer(c *fiber.Ctx) error
+	CreateCustomer(c *fiber.Ctx) error
 }
 
 type customerController struct {
@@ -69,3 +71,42 @@ func (ctl *customerController) GetCustomer(c *fiber.Ctx) error {
 // 	// Implement logic for updating a customer
 // 	return c.SendString("UpdateCustomer")
 // }
+
+func (ctl *customerController) CreateCustomer(c *fiber.Ctx) error {
+	log.Infof("==-- CreateCustomer --==")
+
+	var payload model.CreateCustomerPayload
+
+	if err := c.BodyParser(&payload); err != nil {
+		log.Errorf("Create Connection Type Error parsing")
+		return c.Status(400).JSON(fiber.Map{
+			"status":  "error",
+			"message": "API Failed.",
+			"data":    err,
+		})
+	}
+
+	res, err := ctl.customerService.CreatecustomerService(payload, c.IP())
+	if err != nil {
+		log.Errorf("CreateCustomer Error from service CreateCustomer: %v", err)
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "error",
+			"message": "API Failed.",
+			"data":    err,
+		})
+	}
+
+	if res.StatusCode == 400 {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"status":  400,
+			"message": res.Message,
+			"data":    nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"message": "CreateCustomer",
+		"data":    nil,
+	})
+}

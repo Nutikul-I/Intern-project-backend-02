@@ -23,7 +23,7 @@ type (
 
 	// ใช้ตอนสร้างลูกค้าใหม่
 	CreateCustomerPayload struct {
-		CustomerId string `json:"customerId"` // ต้องเตรียมค่ามาให้ก่อน เช่น UUID
+		CustomerID string `json:"customerId"` // ต้องเตรียมค่ามาให้ก่อน เช่น UUID
 		Name       string `json:"name"`
 		Phone      string `json:"phone"`
 		Email      string `json:"email"`
@@ -32,7 +32,7 @@ type (
 
 	// ใช้ตอนอัปเดตลูกค้า
 	UpdateCustomerPayload struct {
-		CustomerId string `json:"customerId"`
+		CustomerID string `json:"customerId"`
 		Name       string `json:"name"`
 		Phone      string `json:"phone"`
 		Email      string `json:"email"`
@@ -41,7 +41,7 @@ type (
 	// struct สำหรับเก็บข้อมูลลูกค้าแบบเต็ม ๆ (map ตรงกับ WS_customers)
 	Customer struct {
 		ID         int        `json:"id"`
-		CustomerId string     `json:"customerId"`
+		CustomerID string     `json:"customerId"`
 		Name       string     `json:"name"`
 		Phone      string     `json:"phone"`
 		Email      string     `json:"email"`
@@ -71,8 +71,9 @@ FROM WS_customers
 WHERE customer_id = ? AND deleted_at IS NULL;`
 
 var SQL_CREATE_CUSTOMER = `
-INSERT INTO WS_customers (customer_id, name, email, created_by, created_at)
-VALUES (?, ?, ?, ?, ?);`
+INSERT INTO WS_customers (customer_id, name, phone, email, created_by, created_at)
+VALUES (?, ?, ?, ?, ?, NOW());
+`
 
 var SQL_UPDATE_CUSTOMER = `
 UPDATE WS_customers 
@@ -88,3 +89,9 @@ var SQL_COUNT_CUSTOMER = `
 SELECT COUNT(*) 
 FROM WS_customers
 WHERE deleted_at IS NULL;`
+
+var SQL_CHECK_CUSTOMER = `
+SELECT customer_id, name, phone, email
+FROM WS_customers
+WHERE customer_id = ? AND deleted_at IS NULL;
+`

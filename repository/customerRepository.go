@@ -57,46 +57,46 @@ func GetTotalCustomerRepository(row int) (int, error) {
 	return totalPages, nil
 }
 
-// func CreateMerchantRepository(body model.CreateMerchantPayload) (model.UpdateResponse, error) {
+func CreateCustomerRepository(body model.CreateCustomerPayload) (model.UpdateResponse, error) {
+	conn := ConnectDB()
+	ctx := context.Background()
 
-// 	conn := ConnectDB()
-// 	ctx := context.Background()
+	// Check if database is alive.
+	err := conn.PingContext(ctx)
+	if err != nil {
+		log.Errorf("Error PingContext: %v", err)
+		return model.UpdateResponse{}, err
+	}
 
-// 	// Check if database is alive.
-// 	err := conn.PingContext(ctx)
-// 	if err != nil {
-// 		log.Errorf("Error PingContext: %v", err)
-// 		return model.UpdateResponse{}, err
-// 	}
+	// Check if customer already exists
+	rowsCheck, err := conn.QueryContext(ctx, model.SQL_CHECK_CUSTOMER, body.CustomerID)
+	if err != nil {
+		log.Errorf("Error executing query: %v", err)
+		return model.UpdateResponse{}, err
+	}
+	defer rowsCheck.Close()
 
-// 	tsql_check := model.SQL_CHECK_MERCHANT
-// 	rows_check, err := conn.QueryContext(ctx, tsql_check,
-// 		sql.Named("MasterMerchantID", body.MasterMerchantID),
-// 		sql.Named("MerchantID", body.MerchantID))
-// 	if err != nil {
-// 		log.Errorf("Error executing query: %v", err)
-// 		return model.UpdateResponse{}, err
-// 	}
-// 	defer rows_check.Close()
+	var existingCustomer model.Customer
+	err = scan.Row(&existingCustomer, rowsCheck)
+	if err != nil {
+		// Customer does not exist, create a new one
+		_, err := conn.ExecContext(ctx, model.SQL_CREATE_CUSTOMER,
+			body.CustomerID,
+			body.Name,
+			body.Phone,
+			body.Email,
+			body.CreatedBy)
+		if err != nil {
+			log.Errorf("Error executing query: %v", err)
+			return model.UpdateResponse{}, err
+		}
 
-// 	var MerchantData model.MasterMerchant
-// 	err = scan.Row(&MerchantData, rows_check)
-// 	if err != nil {
-// 		tsql := model.SQL_CREATE_MERCHANT
-// 		rows, err := conn.QueryContext(ctx, tsql,
-// 			sql.Named("MasterMerchantID", body.MasterMerchantID),
-// 			sql.Named("MerchantID", body.MerchantID))
-// 		if err != nil {
-// 			log.Errorf("Error executing query: %v", err)
-// 			return model.UpdateResponse{}, err
-// 		}
-// 		defer rows.Close()
-
-// 		return model.UpdateResponse{StatusCode: 200, Message: "created  merchant success"}, nil
-// 	} else {
-// 		return model.UpdateResponse{StatusCode: 400, Message: "created  merchant fail"}, nil
-// 	}
-// }
+		return model.UpdateResponse{StatusCode: 200, Message: "Customer created successfully"}, nil
+	} else {
+		// Customer already exists
+		return model.UpdateResponse{StatusCode: 400, Message: "Customer already exists"}, nil
+	}
+}
 
 // func DeleteMerchantRepository(ReqMasterMerchantID string, ReqMerchantID string) (model.UpdateResponse, error) {
 

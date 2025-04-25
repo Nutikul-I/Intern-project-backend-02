@@ -10,15 +10,16 @@ import (
 
 type CustomerService interface {
 	GetcustomerService(mid string, page int, row int) (model.CustomerPagination, error)
-	// CreatecustomerService(body model.CreateMerchantPayload, ipAddress string) (model.UpdateResponse, error)
-	// DeletecustomerService(ReqMasterMerchantID string, ReqMerchantID string) (model.UpdateResponse, error)
+	CreatecustomerService(body model.CreateCustomerPayload, ipAddress string) (model.UpdateResponse, error)
+
+	// DeletecustomerService(ReqCustomerID string) (model.UpdateResponse, error)
 }
 
 type customerService struct {
 	customerHandler handler.CustomerHandler
 }
 
-func NewcustomerService(customerHandler handler.CustomerHandler) CustomerService {
+func NewCustomerService(customerHandler handler.CustomerHandler) CustomerService {
 	return &customerService{customerHandler}
 }
 
@@ -47,19 +48,19 @@ func (s *customerService) GetcustomerService(mid string, page int, row int) (mod
 	return CustomerPagination, err
 }
 
-// func (s *customerService) CreatecustomerService(body model.CreateMerchantPayload, ipAddress string) (model.UpdateResponse, error) {
-// 	log.Infof("==-- CreatecustomerService --==")
+func (s *customerService) CreatecustomerService(body model.CreateCustomerPayload, ipAddress string) (model.UpdateResponse, error) {
+	log.Infof("==-- CreatecustomerService --==")
 
-// 	var err error
-// 	var Result model.UpdateResponse
+	var err error
+	var Result model.UpdateResponse
 
-// 	Result, err = merchantRepository.CreateMerchantRepository(body)
-// 	if err != nil {
-// 		log.Errorf("Error from CreateMerchantRepository: %v", err)
-// 		return model.UpdateResponse{}, err
-// 	}
-// 	return Result, err
-// }
+	Result, err = customerRepository.CreateCustomerRepository(body)
+	if err != nil {
+		log.Errorf("Error from CreateCustomerRepository: %v", err)
+		return model.UpdateResponse{}, err
+	}
+	return Result, err
+}
 
 // func (s *customerService) DeletecustomerService(ReqMasterMerchantID string, ReqMerchantID string) (model.UpdateResponse, error) {
 // 	log.Infof("==-- DeletecustomerService --==")
