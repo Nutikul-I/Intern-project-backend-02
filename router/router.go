@@ -35,6 +35,6 @@ func SetupRoutes(app *fiber.App) {
 
 	employees := api.Group("/api/employees")
 	employees.Get("/employees", employeesController.GetEmployees)
-	// employees.Post("/create-employees", employeesController.CreateEmployees)
+	employees.Post("/create-employees", employeesController.CreateEmployees)
 	// employees.Delete("/delete-employees", employeesController.DeleteEmployees)
 }

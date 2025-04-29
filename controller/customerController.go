@@ -40,7 +40,7 @@ func (ctl *customerController) GetCustomer(c *fiber.Ctx) error {
 		Row = RequestRow
 	}
 
-	res, err := ctl.customerService.GetcustomerService(RequestMID, Page, Row)
+	res, err := ctl.customerService.GetCustomerService(RequestMID, Page, Row)
 	if err != nil {
 		log.Errorf("GetCustomer Error from service GetCustomer: %v", err)
 		return c.Status(500).JSON(fiber.Map{
@@ -66,12 +66,6 @@ func (ctl *customerController) GetCustomer(c *fiber.Ctx) error {
 	})
 }
 
-// func (cc *customerController) UpdateCustomer(c *fiber.Ctx) error {
-// 	log.Info("UpdateCustomer called")
-// 	// Implement logic for updating a customer
-// 	return c.SendString("UpdateCustomer")
-// }
-
 func (ctl *customerController) CreateCustomer(c *fiber.Ctx) error {
 	log.Infof("==-- CreateCustomer --==")
 
@@ -86,7 +80,7 @@ func (ctl *customerController) CreateCustomer(c *fiber.Ctx) error {
 		})
 	}
 
-	res, err := ctl.customerService.CreatecustomerService(payload, c.IP())
+	res, err := ctl.customerService.CreateCustomerService(payload, c.IP())
 	if err != nil {
 		log.Errorf("CreateCustomer Error from service CreateCustomer: %v", err)
 		return c.Status(500).JSON(fiber.Map{

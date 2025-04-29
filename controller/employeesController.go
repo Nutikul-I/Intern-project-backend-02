@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"payso-internal-api/model"
 	"payso-internal-api/service"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
@@ -10,6 +10,7 @@ import (
 
 type EmployeesController interface {
 	GetEmployees(c *fiber.Ctx) error
+	CreateEmployees(c *fiber.Ctx) error
 }
 
 type employeesController struct {
@@ -27,16 +28,6 @@ func (ctl *employeesController) GetEmployees(c *fiber.Ctx) error {
 	var Row int = 50
 
 	RequestMID := c.Query("MID")
-	RequestPage, err := strconv.Atoi(c.Query("Page"))
-	RequestRow, err := strconv.Atoi(c.Query("Row"))
-
-	if RequestPage > 0 {
-		Page = RequestPage
-	}
-
-	if RequestRow > 0 {
-		Row = RequestRow
-	}
 
 	res, err := ctl.employeesService.GetEmployeesService(RequestMID, Page, Row)
 	if err != nil {
@@ -64,8 +55,42 @@ func (ctl *employeesController) GetEmployees(c *fiber.Ctx) error {
 	})
 }
 
-// func (cc *employeesController) UpdateEmployees(c *fiber.Ctx) error {
-// 	log.Info("UpdateEmployees called")
-// 	// Implement logic for updating a employees
-// 	return c.SendString("UpdateEmployees")
-// }
+func (ctl *employeesController) CreateEmployees(c *fiber.Ctx) error {
+	log.Infof("==-- CreateCustomer --==")
+
+	var payload model.CreateEmployeesPayload
+
+	if err := c.BodyParser(&payload); err != nil {
+		log.Errorf("Create Connection Type Error parsing")
+		return c.Status(400).JSON(fiber.Map{
+			"status":  "error",
+			"message": "API Failed.",
+			"data":    err,
+		})
+	}
+
+	res, err := ctl.employeesService.CreateEmployeesService(payload, c.IP())
+	if err != nil {
+		log.Errorf("CreateCustomer Error from service CreateCustomer: %v", err)
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "error",
+			"message": "API Failed.",
+			"data":    err,
+		})
+	}
+
+	if res.StatusCode == 400 {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"status":  400,
+			"message": res.Message,
+			"data":    nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"message": "CreateCustomer",
+		"data":    nil,
+	})
+
+}

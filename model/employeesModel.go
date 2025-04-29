@@ -17,17 +17,18 @@ type (
 	}
 
 	CreateEmployeesPayload struct {
-		Prefix         string  `json:"prefix"`
-		FirstName      string  `json:"firstName"`
-		LastName       string  `json:"lastName"`
-		Nickname       string  `json:"nickname"`
-		Gender         string  `json:"gender"`
-		StartDate      string  `json:"startDate"`
-		PositionID     int     `json:"positionId"`
-		Phone          string  `json:"phone"`
-		Email          string  `json:"email"`
-		BankName       string  `json:"bankName"`
-		BankBranch     string  `json:"bankBranch"`
+		Prefix     string `json:"prefix"`
+		FirstName  string `json:"firstName"`
+		LastName   string `json:"lastName"`
+		Nickname   string `json:"nickname"`
+		Gender     string `json:"gender"`
+		StartDate  string `json:"startDate"`
+		PositionID int    `json:"positionId"`
+		Phone      string `json:"phone"`
+		Email      string `json:"email"`
+		BankName   string `json:"bankName"`
+		BankBranch string `json:"bankBranch"`
+
 		AccountName    string  `json:"accountName"`
 		AccountNumber  string  `json:"accountNumber"`
 		PayDate        string  `json:"payDate"`
@@ -170,12 +171,35 @@ WHERE id = ? AND deleted_at IS NULL;`
 
 var SQL_CREATE_EMPLOYEES = `
 INSERT INTO WS_employees (
-    prefix, first_name, last_name, nickname, gender, start_date, position_id, phone, email, 
-    bank_name, bank_branch, account_name, account_number, pay_date, withholding_tax, 
-    social_security, social_security_id, ot_rate, bonus_rate, leave_rights_year, 
-    leave_rights_sick, leave_rights_personal, color, password, role_id, is_active, 
-    last_login, created_at
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+    prefix, 
+	first_name, 
+	last_name, 
+	nickname, 
+	gender, 
+	start_date, 
+	position_id, 
+	phone, 
+	email, 
+    bank_name, 
+	bank_branch, 
+	account_name, 
+	account_number, 
+	pay_date, 
+	withholding_tax, 
+    social_security, 
+	social_security_id, 
+	ot_rate, 
+	bonus_rate, 
+	leave_rights_year, 
+    leave_rights_sick, 
+	leave_rights_personal, 
+	color, 
+	password, 
+	role_id, 
+	is_active, 
+    last_login, 
+	created_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, );`
 
 var SQL_UPDATE_EMPLOYEES = `
 UPDATE WS_employees 
@@ -196,3 +220,9 @@ var SQL_COUNT_EMPLOYEES = `
 SELECT COUNT(*) 
 FROM WS_employees
 WHERE deleted_at IS NULL;`
+
+var SQL_CHECK_EMPLOYEES = `
+SELECT id, first_name, last_name
+FROM WS_employees
+WHERE id = ?;
+`

@@ -15,19 +15,13 @@ type (
 		CustomerList []CustomerPayload `json:"CustomerList"`
 	}
 
-	// CreateCustomerPayload struct {
-	// 	Name  string `json:"name"`
-	// 	Phone string `json:"phone"`
-	// 	Email string `json:"email"`
-	// }
-
 	// ใช้ตอนสร้างลูกค้าใหม่
 	CreateCustomerPayload struct {
-		CustomerID string `json:"customerId"` // ต้องเตรียมค่ามาให้ก่อน เช่น UUID
-		Name       string `json:"name"`
-		Phone      string `json:"phone"`
-		Email      string `json:"email"`
-		CreatedBy  int    `json:"createdBy"`
+		CustomerID *string `json:"customerId"`
+		Name       string  `json:"name"`
+		Phone      string  `json:"phone"`
+		Email      string  `json:"email"`
+		CreatedBy  int     `json:"createdBy"`
 	}
 
 	// ใช้ตอนอัปเดตลูกค้า

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"payso-internal-api/model"
+	"time"
 
 	"github.com/blockloop/scan"
 	log "github.com/sirupsen/logrus"
@@ -57,46 +58,72 @@ func GetTotalEmployeesRepository(row int) (int, error) {
 	return totalPages, nil
 }
 
-// func CreateMerchantRepository(body model.CreateMerchantPayload) (model.UpdateResponse, error) {
+func CreateEmployeesRepository(body model.CreateEmployeesPayload) (model.UpdateResponse, error) {
+	conn := ConnectDB()
+	ctx := context.Background()
 
-// 	conn := ConnectDB()
-// 	ctx := context.Background()
+	// Check if database is alive.
+	err := conn.PingContext(ctx)
+	if err != nil {
+		log.Errorf("Error PingContext: %v", err)
+		return model.UpdateResponse{}, err
+	}
 
-// 	// Check if database is alive.
-// 	err := conn.PingContext(ctx)
-// 	if err != nil {
-// 		log.Errorf("Error PingContext: %v", err)
-// 		return model.UpdateResponse{}, err
-// 	}
+	// Check if employee already exists
+	rows_check, err := conn.QueryContext(ctx, model.SQL_CHECK_EMPLOYEES)
+	if err != nil {
+		log.Errorf("Error executing query: %v", err)
+		return model.UpdateResponse{}, err
+	}
+	defer rows_check.Close()
 
-// 	tsql_check := model.SQL_CHECK_MERCHANT
-// 	rows_check, err := conn.QueryContext(ctx, tsql_check,
-// 		sql.Named("MasterMerchantID", body.MasterMerchantID),
-// 		sql.Named("MerchantID", body.MerchantID))
-// 	if err != nil {
-// 		log.Errorf("Error executing query: %v", err)
-// 		return model.UpdateResponse{}, err
-// 	}
-// 	defer rows_check.Close()
+	var EmployeesData model.Employees
+	err = scan.Row(&EmployeesData, rows_check)
+	if err != nil {
+		// Employee does not exist, create a new one
 
-// 	var MerchantData model.MasterMerchant
-// 	err = scan.Row(&MerchantData, rows_check)
-// 	if err != nil {
-// 		tsql := model.SQL_CREATE_MERCHANT
-// 		rows, err := conn.QueryContext(ctx, tsql,
-// 			sql.Named("MasterMerchantID", body.MasterMerchantID),
-// 			sql.Named("MerchantID", body.MerchantID))
-// 		if err != nil {
-// 			log.Errorf("Error executing query: %v", err)
-// 			return model.UpdateResponse{}, err
-// 		}
-// 		defer rows.Close()
+		_, err := conn.ExecContext(ctx, model.SQL_CREATE_EMPLOYEES,
+			body.Prefix,
+			body.FirstName,
+			body.LastName,
+			body.Nickname,
+			body.Gender,
+			body.StartDate,
+			body.PositionID,
+			body.Phone,
+			body.Email,
+			body.BankName,
+			body.BankBranch,
+			body.AccountName,
+			body.AccountNumber,
+			body.PayDate,
+			body.WithholdingTax,
+			body.SocialSecurity,
+			"", // social_security_id
+			0,  // ot_rate
+			0,  // bonus_rate
+			0,  // leave_rights_year
+			0,  // leave_rights_sick
+			0,  // leave_rights_personal
+			"", // color
+			"", // password
+			body.RoleID,
+			true,       // is_active
+			nil,        // last_login
+			time.Now(), // created_at
+		)
 
-// 		return model.UpdateResponse{StatusCode: 200, Message: "created  merchant success"}, nil
-// 	} else {
-// 		return model.UpdateResponse{StatusCode: 400, Message: "created  merchant fail"}, nil
-// 	}
-// }
+		if err != nil {
+			log.Errorf("Error executing insert: %v", err)
+			return model.UpdateResponse{}, err
+		}
+
+		return model.UpdateResponse{StatusCode: 200, Message: "Employee created successfully"}, nil
+	} else {
+		// Employee already exists
+		return model.UpdateResponse{StatusCode: 400, Message: "Employee already exists"}, nil
+	}
+}
 
 // func DeleteMerchantRepository(ReqMasterMerchantID string, ReqMerchantID string) (model.UpdateResponse, error) {
 

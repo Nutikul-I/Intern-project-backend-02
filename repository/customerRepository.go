@@ -68,7 +68,7 @@ func CreateCustomerRepository(body model.CreateCustomerPayload) (model.UpdateRes
 		return model.UpdateResponse{}, err
 	}
 
-	// Check if customer already exists
+	// Check if customer already exists by email
 	rowsCheck, err := conn.QueryContext(ctx, model.SQL_CHECK_CUSTOMER, body.CustomerID)
 	if err != nil {
 		log.Errorf("Error executing query: %v", err)
@@ -85,7 +85,8 @@ func CreateCustomerRepository(body model.CreateCustomerPayload) (model.UpdateRes
 			body.Name,
 			body.Phone,
 			body.Email,
-			body.CreatedBy)
+			body.CreatedBy,
+		)
 		if err != nil {
 			log.Errorf("Error executing query: %v", err)
 			return model.UpdateResponse{}, err

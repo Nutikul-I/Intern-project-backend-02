@@ -3,14 +3,14 @@ package service
 import (
 	"payso-internal-api/handler"
 	"payso-internal-api/model"
-	EmployeesRepository "payso-internal-api/repository"
+	employeesRepository "payso-internal-api/repository"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type EmployeesService interface {
 	GetEmployeesService(mid string, page int, row int) (model.EmployeesPagination, error)
-	// CreateEmployeesService(body model.CreateMerchantPayload, ipAddress string) (model.UpdateResponse, error)
+	CreateEmployeesService(body model.CreateEmployeesPayload, ipAddress string) (model.UpdateResponse, error)
 	// DeleteEmployeesService(ReqMasterMerchantID string, ReqMerchantID string) (model.UpdateResponse, error)
 }
 type employeesService struct {
@@ -27,7 +27,7 @@ func (s *employeesService) GetEmployeesService(mid string, page int, row int) (m
 	var err error
 	var EmployeesList []model.EmployeesPayload
 
-	EmployeesList, err = EmployeesRepository.GetEmployeesRepository(mid, page, row)
+	EmployeesList, err = employeesRepository.GetEmployeesRepository(mid, page, row)
 	if err != nil {
 		log.Errorf("Error from GetEmployeesRepository: %v", err)
 		return model.EmployeesPagination{}, err
@@ -46,19 +46,25 @@ func (s *employeesService) GetEmployeesService(mid string, page int, row int) (m
 	return EmployeesPagination, err
 }
 
-// func (s *customerService) CreatecustomerService(body model.CreateMerchantPayload, ipAddress string) (model.UpdateResponse, error) {
-// 	log.Infof("==-- CreatecustomerService --==")
+func (s *employeesService) CreateEmployeesService(body model.CreateEmployeesPayload, ipAddress string) (model.UpdateResponse, error) {
+	log.Infof("==-- CreateEmployeesService --==")
 
-// 	var err error
-// 	var Result model.UpdateResponse
+	var err error
+	var Result model.UpdateResponse
 
-// 	Result, err = merchantRepository.CreateMerchantRepository(body)
-// 	if err != nil {
-// 		log.Errorf("Error from CreateMerchantRepository: %v", err)
-// 		return model.UpdateResponse{}, err
-// 	}
-// 	return Result, err
-// }
+	// Map body to the correct type
+	employeesPayload := model.CreateEmployeesPayload{
+		// Map fields from body to employeesPayload here
+		// Example: Field1: body.Field1, Field2: body.Field2,ฆ
+	}
+
+	Result, err = employeesRepository.CreateEmployeesRepository(employeesPayload)
+	if err != nil {
+		log.Errorf("Error from CreateEmployeesRepository: %v", err)
+		return model.UpdateResponse{}, err
+	}
+	return Result, err
+}
 
 // func (s *customerService) DeletecustomerService(ReqMasterMerchantID string, ReqMerchantID string) (model.UpdateResponse, error) {
 // 	log.Infof("==-- DeletecustomerService --==")

@@ -9,8 +9,8 @@ import (
 )
 
 type CustomerService interface {
-	GetcustomerService(mid string, page int, row int) (model.CustomerPagination, error)
-	CreatecustomerService(body model.CreateCustomerPayload, ipAddress string) (model.UpdateResponse, error)
+	GetCustomerService(mid string, page int, row int) (model.CustomerPagination, error)
+	CreateCustomerService(body model.CreateCustomerPayload, ipAddress string) (model.UpdateResponse, error)
 
 	// DeletecustomerService(ReqCustomerID string) (model.UpdateResponse, error)
 }
@@ -23,7 +23,7 @@ func NewCustomerService(customerHandler handler.CustomerHandler) CustomerService
 	return &customerService{customerHandler}
 }
 
-func (s *customerService) GetcustomerService(mid string, page int, row int) (model.CustomerPagination, error) {
+func (s *customerService) GetCustomerService(mid string, page int, row int) (model.CustomerPagination, error) {
 	log.Infof("==-- GetcustomerService --==")
 
 	var err error
@@ -35,20 +35,20 @@ func (s *customerService) GetcustomerService(mid string, page int, row int) (mod
 		return model.CustomerPagination{}, err
 	}
 
-	// TotalPages, err := customerRepository.GetTotalCustomerRepository(mid)
-	// if err != nil {
-	// 	log.Errorf("Error from GetCustomerRepository: %v", err)
-	// 	return model.CustomerPagination{}, err
-	// }
+	TotalPages, err := customerRepository.GetTotalCustomerRepository(row)
+	if err != nil {
+		log.Errorf("Error from GetCustomerRepository: %v", err)
+		return model.CustomerPagination{}, err
+	}
 
 	CustomerPagination := model.CustomerPagination{
-		// TotalPages:   TotalPages,
+		TotalPages:   TotalPages,
 		CustomerList: CustomerList}
 
 	return CustomerPagination, err
 }
 
-func (s *customerService) CreatecustomerService(body model.CreateCustomerPayload, ipAddress string) (model.UpdateResponse, error) {
+func (s *customerService) CreateCustomerService(body model.CreateCustomerPayload, ipAddress string) (model.UpdateResponse, error) {
 	log.Infof("==-- CreatecustomerService --==")
 
 	var err error
