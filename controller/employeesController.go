@@ -56,7 +56,7 @@ func (ctl *employeesController) GetEmployees(c *fiber.Ctx) error {
 }
 
 func (ctl *employeesController) CreateEmployees(c *fiber.Ctx) error {
-	log.Infof("==-- CreateCustomer --==")
+	log.Infof("==-- CreateEmloyees --==")
 
 	var payload model.CreateEmployeesPayload
 
@@ -69,9 +69,11 @@ func (ctl *employeesController) CreateEmployees(c *fiber.Ctx) error {
 		})
 	}
 
+	log.Infof("CreateEmployees Payload: %v", payload)
+
 	res, err := ctl.employeesService.CreateEmployeesService(payload, c.IP())
 	if err != nil {
-		log.Errorf("CreateCustomer Error from service CreateCustomer: %v", err)
+		log.Errorf("CreateEmployees Error from service CreateEmployees: %v", err)
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
 			"message": "API Failed.",
@@ -89,7 +91,7 @@ func (ctl *employeesController) CreateEmployees(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status":  200,
-		"message": "CreateCustomer",
+		"message": "CreateEmpployees",
 		"data":    nil,
 	})
 

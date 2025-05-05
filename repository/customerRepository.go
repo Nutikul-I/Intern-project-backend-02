@@ -78,6 +78,7 @@ func CreateCustomerRepository(body model.CreateCustomerPayload) (model.UpdateRes
 
 	var existingCustomer model.Customer
 	err = scan.Row(&existingCustomer, rowsCheck)
+	log.Infof("Existing Employees: %v", rowsCheck)
 	if err != nil {
 		// Customer does not exist, create a new one
 		_, err := conn.ExecContext(ctx, model.SQL_CREATE_CUSTOMER,

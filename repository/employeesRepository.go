@@ -24,7 +24,7 @@ func GetEmployeesRepository(mid string, page int, row int) ([]model.EmployeesPay
 		offset = (page - 1) * row
 	}
 
-	tsql := model.SQL_GET_CUSTOMERS
+	tsql := model.SQL_GET_EMPLOYEES
 
 	rows, err := conn.QueryContext(ctx, tsql, row, offset)
 	if err != nil {
@@ -69,98 +69,94 @@ func CreateEmployeesRepository(body model.CreateEmployeesPayload) (model.UpdateR
 		return model.UpdateResponse{}, err
 	}
 
-	// Check if employee already exists
-	rows_check, err := conn.QueryContext(ctx, model.SQL_CHECK_EMPLOYEES)
+	createdAt := time.Now()
+
+	query := model.SQL_CREATE_EMPLOYEES
+
+	log.Infof("Query: %s", query)
+	log.Infof("Body: %+v", body)
+
+	_, err = conn.ExecContext(ctx, query,
+		body.Prefix,
+		body.FirstName,
+		body.LastName,
+		body.NickName,
+		body.PositionID,
+		body.Email,
+		body.BankName,
+		body.BankBranch,
+		body.AccountNumber,
+		body.PayDate,
+		body.WithholdingTax,
+		body.SocialSecurity,
+		body.SocialSecurityID,
+		body.OtRate,
+		body.LeaveRightsYear,
+		body.LeaveRightsSick,
+		body.LeaveRightsPersonal,
+		body.Color,
+		body.Password,
+		body.RoleID,
+		true,
+		createdAt,
+		createdAt,
+		createdAt,
+		nil,
+		body.SeatRate,
+		body.PaymentChannel,
+		body.AccountType,
+	)
 	if err != nil {
 		log.Errorf("Error executing query: %v", err)
-		return model.UpdateResponse{}, err
+		return model.UpdateResponse{400, "Error creating employee"}, err
 	}
-	defer rows_check.Close()
 
-	var EmployeesData model.Employees
-	err = scan.Row(&EmployeesData, rows_check)
-	if err != nil {
-		// Employee does not exist, create a new one
+	return model.UpdateResponse{200, "Employee created successfully"}, nil
 
-		_, err := conn.ExecContext(ctx, model.SQL_CREATE_EMPLOYEES,
-			body.Prefix,
-			body.FirstName,
-			body.LastName,
-			body.Nickname,
-			body.Gender,
-			body.StartDate,
-			body.PositionID,
-			body.Phone,
-			body.Email,
-			body.BankName,
-			body.BankBranch,
-			body.AccountName,
-			body.AccountNumber,
-			body.PayDate,
-			body.WithholdingTax,
-			body.SocialSecurity,
-			"", // social_security_id
-			0,  // ot_rate
-			0,  // bonus_rate
-			0,  // leave_rights_year
-			0,  // leave_rights_sick
-			0,  // leave_rights_personal
-			"", // color
-			"", // password
-			body.RoleID,
-			true,       // is_active
-			nil,        // last_login
-			time.Now(), // created_at
-		)
+	// if err != nil {
+	// 	var createdAt = time.Now()
+	// 	var updateAt = time.Now()
+	// 	if body.SocialSecurity == "" {
+	// 		body.SocialSecurity = "0" // หรือใช้ค่า 0 หรือ false ตามที่ต้องการ
+	// 	}
+	// 	if body.SocialSecurity == "0" {
+	// 		body.SocialSecurityID = ""
+	// 	}
+	// 	_, err := conn.ExecContext(ctx, model.SQL_CREATE_EMPLOYEES,
+	// 		body.Prefix,
+	// 		body.FirstName,
+	// 		body.LastName,
+	// 		body.Nickname,
+	// 		body.PositionID,
+	// 		body.Email,
+	// 		body.BankName,
+	// 		body.BankBranch,
+	// 		body.AccountNumber,
+	// 		body.PayDate,
+	// 		body.WithholdingTax,
+	// 		body.SocialSecurity,
+	// 		body.SocialSecurityID,
+	// 		body.OtRate,
+	// 		body.LeaveRightsYear,
+	// 		body.LeaveRightsSick,
+	// 		body.LeaveRightsPersonal,
+	// 		body.Color,
+	// 		body.Password,
+	// 		body.RoleID,
+	// 		createdAt,
+	// 		updateAt,
+	// 		body.SeatRate,
+	// 		body.PaymentChannel,
+	// 		body.AccountType,
+	// 	)
+	// 	if err != nil {
+	// 		log.Errorf("Error executing query: %v", err)
+	// 		return model.UpdateResponse{}, err
+	// 	}
 
-		if err != nil {
-			log.Errorf("Error executing insert: %v", err)
-			return model.UpdateResponse{}, err
-		}
-
-		return model.UpdateResponse{StatusCode: 200, Message: "Employee created successfully"}, nil
-	} else {
-		// Employee already exists
-		return model.UpdateResponse{StatusCode: 400, Message: "Employee already exists"}, nil
-	}
+	// 	return model.UpdateResponse{StatusCode: 200, Message: "Customer created successfully"}, nil
+	// } else {
+	// 	// Customer already exists
+	// 	return model.UpdateResponse{StatusCode: 400, Message: "Customer already exists"}, nil
+	// }
 }
-
-// func DeleteMerchantRepository(ReqMasterMerchantID string, ReqMerchantID string) (model.UpdateResponse, error) {
-
-// 	conn := ConnectDB()
-// 	ctx := context.Background()
-
-// 	// Check if database is alive.
-// 	err := conn.PingContext(ctx)
-// 	if err != nil {
-// 		log.Errorf("Error PingContext: %v", err)
-// 		return model.UpdateResponse{}, err
-// 	}
-
-// 	tsql_check := model.SQL_CHECK_MERCHANT
-// 	rows_check, err := conn.QueryContext(ctx, tsql_check,
-// 		sql.Named("MasterMerchantID", ReqMasterMerchantID),
-// 		sql.Named("MerchantID", ReqMerchantID))
-// 	if err != nil {
-// 		log.Errorf("Error executing query: %v", err)
-// 		return model.UpdateResponse{}, err
-// 	}
-// 	defer rows_check.Close()
-
-// 	var MerchantData model.MasterMerchant
-// 	err = scan.Row(&MerchantData, rows_check)
-// 	if err != nil {
-// 		return model.UpdateResponse{StatusCode: 400, Message: "deleted  merchant fail"}, nil
-// 	} else {
-// 		tsql := model.SQL_DELETE_MERCHANT
-// 		rows, err := conn.QueryContext(ctx, tsql,
-// 			sql.Named("MasterMerchantID", ReqMasterMerchantID),
-// 			sql.Named("MerchantID", ReqMerchantID))
-// 		if err != nil {
-// 			log.Errorf("Error executing query: %v", err)
-// 			return model.UpdateResponse{}, err
-// 		}
-// 		defer rows.Close()
-// 		return model.UpdateResponse{StatusCode: 200, Message: "deleted  merchant success"}, nil
-// 	}
-// }

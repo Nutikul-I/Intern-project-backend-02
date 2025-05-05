@@ -52,13 +52,9 @@ func (s *employeesService) CreateEmployeesService(body model.CreateEmployeesPayl
 	var err error
 	var Result model.UpdateResponse
 
-	// Map body to the correct type
-	employeesPayload := model.CreateEmployeesPayload{
-		// Map fields from body to employeesPayload here
-		// Example: Field1: body.Field1, Field2: body.Field2,ฆ
-	}
+	log.Infof("CreateEmployeesService body: %v", body)
 
-	Result, err = employeesRepository.CreateEmployeesRepository(employeesPayload)
+	Result, err = employeesRepository.CreateEmployeesRepository(body)
 	if err != nil {
 		log.Errorf("Error from CreateEmployeesRepository: %v", err)
 		return model.UpdateResponse{}, err
